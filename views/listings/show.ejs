@@ -16,7 +16,11 @@
         </div>
         <div class="card-body">
             <p class="card-text"> <b>Owned by : </b><i>
-                    @<%= listing.owner.username %>
+                    <% if(listing.owner && listing.owner.username) { %>
+                        @<%= listing.owner.username %>
+                    <% } else { %>
+                        Unknown User
+                    <% } %>
                 </i> </p>
             <p class="card-text">
                 <b>Description : </b>
@@ -37,7 +41,7 @@
         </div>
     </div>
     <br>
-    <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+    <% if(currUser && listing.owner && listing.owner._id && listing.owner._id.equals(currUser._id)) { %>
         <div class="btns">
             <a href="/listings/<%= listing._id %>/edit" class="col-sm-1 offset-sm-2">
                 <button class="edit-btn">
@@ -95,7 +99,7 @@
                 <% for(review of listing.reviews) { %>
                     <div class="card review-card col-sm-5 mb-3 ms-sm-3">
                         <div class="card-body mb-3">
-                            <h5 class="card-title">@<%= review.author.username %>
+                            <h5 class="card-title">@<%= review.author && review.author.username ? review.author.username : 'Unknown User' %>
                             </h5>
                             <p class="starability-result card-text" data-rating="<%= review.rating %>">
                             </p>
@@ -104,7 +108,7 @@
                             </p>
                         </div>
 
-                        <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+                        <% if(currUser && listing.owner && listing.owner._id && listing.owner._id.equals(currUser._id)) { %>
                             <form method="POST"
                             action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
                             class="p-2 my-3 mb-3">

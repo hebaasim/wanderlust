@@ -8,7 +8,7 @@ module.exports.redirect = (req,res) => {
     res.redirect("/listings");
 }
 
-module.exports.signup = async(req, res) => {
+module.exports.signup = async(req, res, next) => {
     try {
         let {username, email, password} = req.body;
         const newUser = new User({email, username});
@@ -18,7 +18,7 @@ module.exports.signup = async(req, res) => {
             if(err) {
                 return next(err);
             }
-            req.flash("success", "welcome to wanderlust");
+            req.flash("success", "welcome to Airbnb Clone");
             res.redirect("/listings");
         })
     } catch(e) {
@@ -32,12 +32,12 @@ module.exports.renderLoginForm = (req, res) => {
 };
 
 module.exports.login = async(req, res) => {
-    req.flash("success", "welcome back to Wanderlust!");
+    req.flash("success", "welcome back to Airbnb Clone!");
     let redirectUrl = res.locals.redirectUrl || "/listings";
     res.redirect(redirectUrl);
 };
 
-module.exports.logout = (req, res) => {
+module.exports.logout = (req, res, next) => {
     req.logout((err) => {
         if(err) {
             return next(err);

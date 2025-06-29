@@ -20,15 +20,15 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
-const dbUrl = process.env.ATLASDB_URL;
+// MongoDB connection with fallback for development
+const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/wanderlust";
 
 main()
     .then(() => {
     console.log("connected to DB");
     })
     .catch((err) => {
-        console.log(err);
+        console.log("Database connection error:", err);
     })
 
 async function main() {
@@ -42,21 +42,22 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+// Session store with fallback for development
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     crypto: {
-        secret: process.env.SECRET,
+        secret: process.env.SECRET || "mysecret",
     },
     touchAfter: 24 * 3600,
 });
 
-store.on("error" , () => {
+store.on("error" , (err) => {
     console.log("ERROR in MONGO SESSION STORE", err);
 });
 
 const sessionOptions = {
     store,
-    secret: process.env.SECRET,
+    secret: process.env.SECRET || "mysecret",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -68,8 +69,6 @@ const sessionOptions = {
 // app.get("/", (req, res) => {
 //     res.send("Hi, I am root");
 // })
-
-
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -91,7 +90,6 @@ app.use((req, res, next) => {
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
-
 
 app.all("*", (req,res,next) => {
     next(new ExpressError(404, "Page Not Found"));

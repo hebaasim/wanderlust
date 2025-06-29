@@ -1,7 +1,4 @@
 const Listing = require("../models/listing");
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
-const mapToken = process.env.MAP_TOKEN;
-const geocodingClient = mbxGeocoding({accessToken: mapToken});
 
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({});
@@ -30,19 +27,11 @@ module.exports.showListing = async (req, res) => {
 };
 
 module.exports.createListing = async (req, res, next) => {
-    let response = await geocodingClient.forwardGeocode({
-        query: req.body.listing.location,
-        limit: 1
-      })
-    .send();
-
     let url = req.file.path;
     let filename = req.file.filename;
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
     newListing.image = { url, filename };
-
-    newListing.geometry = response.body.features[0].geometry;
 
     let savedListing = await newListing.save();
     console.log(savedListing);
@@ -66,14 +55,6 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
-    let coordinate = await geocodingClient.forwardGeocode({
-        query: `${req.body.listing.location},${req.body.listing.country}`,
-        limit: 2
-    })
-      .send();
-
-    req.body.listing.geometry = coordinate.body.features[0].geometry;
-
     let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
 
     if (typeof req.file !== "undefined") {
@@ -89,13 +70,19 @@ module.exports.updateListing = async (req, res) => {
 
 module.exports.filterListings = async (req, res, next) => {
     const { q } = req.params;
-    const filteredListings = await Listing.find({category: q }).exec();
+    // Decode URL-encoded characters (like spaces)
+    const decodedCategory = decodeURIComponent(q);
+    console.log("Filtering by category:", decodedCategory);
+    
+    const filteredListings = await Listing.find({category: decodedCategory }).exec();
+    console.log("Found listings:", filteredListings.length);
+    
     if (!filteredListings.length) {
-        req.flash("error", "No Listings exists for this filter!");
+        req.flash("error", `No Listings exist for "${decodedCategory}" filter!`);
         res.redirect("/listings");
         return;
     }
-    res.locals.success = `Listings Filtered by ${q}`;
+    res.locals.success = `Listings Filtered by ${decodedCategory}`;
     res.render("listings/index.ejs", { allListings: filteredListings });
 }
 

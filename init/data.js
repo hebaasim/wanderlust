@@ -107,7 +107,7 @@ const sampleListings = [
     location: "Lake Tahoe",
     country: "United States",
     geometry:{
-      coordinates: [ -120.12787, 39.267319 ], type: 'Point'
+      type: 'Point', coordinates: [ -120.12787, 39.267319 ]
     },
     category: "Mountains"
   },
@@ -155,7 +155,7 @@ const sampleListings = [
     location: "Serengeti National Park",
     country: "Tanzania",
     geometry:{
-      coordinates: [ 34.8333, 2.3333 ], type: 'Point'
+      type: 'Point', coordinates: [ 34.8333, 2.3333 ]
     },
     category: "Mountains"
   },
@@ -267,7 +267,7 @@ const sampleListings = [
     location: "Miami",
     country: "United States",
     geometry:{
-      coordinates: [ -80.18537321875, 25.76513515625 ], type: 'Point'
+      type: 'Point', coordinates: [ -80.18537321875, 25.76513515625 ]
     },
     category: "Arctic"
   },
@@ -299,7 +299,7 @@ const sampleListings = [
     location: "Scottish Highlands",
     country: "United Kingdom",
     geometry:{
-      coordinates: [ -4.228937, 57.477415 ], type: 'Point'
+      type: 'Point', coordinates: [ -4.228937, 57.477415 ]
     },
     category: "Iconic cities"
   },
@@ -363,7 +363,7 @@ const sampleListings = [
     location: "Costa Rica",
     country: "Costa Rica",
     geometry:{
-      coordinates: [ -84.092347, 9.932191 ], type: 'Point'
+      type: 'Point', coordinates: [ -84.092347, 9.932191 ]
     },
     category: "Rooms"
   },
@@ -427,7 +427,7 @@ const sampleListings = [
     location: "Maldives",
     country: "Maldives",
     geometry:{
-      coordinates: [ 100.58672, 13.772545 ], type: 'Point'
+      type: 'Point', coordinates: [ 100.58672, 13.772545 ]
     },
     category: "Iconic cities"
   },
